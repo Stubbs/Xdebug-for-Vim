@@ -28,6 +28,8 @@
 # Authors:
 #    Seung Woo Shin <segv <at> sayclub.com>
 #    Sam Ghods <sam <at> box.net>
+#    Ethan McCreadie <ethanmcc <at> gmailcom>
+#    Craig Andrews <craig <at> lazyrobot.org.uk>
 
 """
 	debugger.py -- DBGp client: a remote debugger interface to DBGp protocol
@@ -994,6 +996,15 @@ class Debugger:
         self.send_command('breakpoint_remove', '-d ' + str(id))
         self.recv()
     else:
+      import re
+      map_sep = re.compile(',\s*')
+      path_sep = re.compile('\s*:\s*')
+      mappings = map_sep.split(vim.eval('pathMap'))
+      if mappings:
+        for mapping in mappings:
+           (remote_path, local_path) = path_sep.split(mapping)
+           path_map = re.compile('(' + local_path + ')')
+           file = path_map.sub(remote_path, file)
       bno = self.breakpt.add(file, row, exp)
       vim.command('sign place ' + str(bno) + ' name=breakpt line=' + str(row) + ' file=' + file)
       if self.protocol.isconnected():
