@@ -526,7 +526,6 @@ class DebugUI:
     map_sep = re.compile(',\s*')
     path_sep = re.compile('\s*:\s*')
     mappings = map_sep.split(vim.eval('pathMap'))
-    print mappings
     if mappings:
       for mapping in mappings:
          (remote_path, local_path) = path_sep.split(mapping)
