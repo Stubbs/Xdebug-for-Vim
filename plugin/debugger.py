@@ -999,14 +999,15 @@ class Debugger:
       import re
       map_sep = re.compile(',\s*')
       path_sep = re.compile('\s*:\s*')
+      remote_file = file
       if vim.eval('exists("pathMap")') != "0":
           mappings = map_sep.split(vim.eval('pathMap'))
           if mappings:
             for mapping in mappings:
                (remote_path, local_path) = path_sep.split(mapping)
                path_map = re.compile('(' + local_path + ')')
-               file = path_map.sub(remote_path, file)
-      bno = self.breakpt.add(file, row, exp)
+               remote_file = path_map.sub(remote_path, file)
+      bno = self.breakpt.add(remote_file, row, exp)
       vim.command('sign place ' + str(bno) + ' name=breakpt line=' + str(row) + ' file=' + file)
       if self.protocol.isconnected():
         msgid = self.send_command('breakpoint_set', \
