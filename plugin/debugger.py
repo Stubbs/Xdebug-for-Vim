@@ -525,8 +525,8 @@ class DebugUI:
     import re
     map_sep = re.compile(',\s*')
     path_sep = re.compile('\s*:\s*')
-    if vim.eval('exists("pathMap")') != "0":
-        mappings = map_sep.split(vim.eval('pathMap'))
+    if vim.eval('exists("g:pathMap")') != "0":
+        mappings = map_sep.split(vim.eval('g:pathMap'))
         if mappings:
           for mapping in mappings:
              (remote_path, local_path) = path_sep.split(mapping)
@@ -1000,8 +1000,8 @@ class Debugger:
       map_sep = re.compile(',\s*')
       path_sep = re.compile('\s*:\s*')
       remote_file = file
-      if vim.eval('exists("pathMap")') != "0":
-          mappings = map_sep.split(vim.eval('pathMap'))
+      if vim.eval('exists("g:pathMap")') != "0":
+          mappings = map_sep.split(vim.eval('g:pathMap'))
           if mappings:
             for mapping in mappings:
                (remote_path, local_path) = path_sep.split(mapping)
