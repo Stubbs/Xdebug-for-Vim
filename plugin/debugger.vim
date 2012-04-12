@@ -53,7 +53,14 @@
 "               You can increase this by putting the following line in your
 "               vimrc:
 "
-"                 let g:dbgTimeout = 10
+"                 let g:dbgWaitTime = 10
+"
+"               For blocking socket operations the timeout is normally set to
+"               5 seconds. If your code calls external services that cause
+"               longer delays, the debugger may time out. Increase the timeout
+"               by putting this line in your vimrc:
+"
+"                 let g:dbgTimeout = 60
 "
 "               The debugger usually relies on the absolute paths of files
 "               being the same on the server and client. This is fine if you
@@ -178,6 +185,9 @@ sign define breakpt text=B>  texthl=DbgBreakPt linehl=DbgBreakPt
 
 if !exists('g:debuggerPort')
   let g:debuggerPort = 9000
+endif
+if !exists('g:dbgWaitTime')
+    let g:dbgWaitTime = 5
 endif
 if !exists('g:dbgTimeout')
     let g:dbgTimeout = 5

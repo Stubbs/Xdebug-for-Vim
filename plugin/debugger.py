@@ -555,10 +555,13 @@ class DebugUI:
 
 class DbgProtocol:
   """ DBGp Procotol class """
-  def __init__(self, port = 9000):
+  def __init__(self, port = 9000, timeout = 0):
     self.port     = port
     self.sock     = None
     self.isconned = 0
+    self.timeout  = timeout
+    if self.timeout <= 0:
+        self.timeout = socket.getdefaulttimeout()
   def isconnected(self):
     return self.isconned
   def accept(self):
@@ -569,6 +572,7 @@ class DbgProtocol:
       serv.bind(('', self.port))
       serv.listen(5)
       (self.sock, address) = serv.accept()
+      self.sock.settimeout(self.timeout)
     except socket.timeout:
       serv.close()
       self.stop()
@@ -675,9 +679,10 @@ class Debugger:
   #################################################################################################################
   # Internal functions
   #
-  def __init__(self, port = 9000, max_children = '32', max_data = '1024', max_depth = '1', minibufexpl = '0', debug = 0, timeout = 5):
+  def __init__(self, port = 9000, max_children = '32', max_data = '1024', max_depth = '1', minibufexpl = '0', debug = 0, waittime = 5, timeout = 5):
     """ initialize Debugger """
-    socket.setdefaulttimeout(timeout)
+    socket.setdefaulttimeout(waittime)
+    self.waittime   = waittime
     self.timeout    = timeout
     self.port       = port
     self.debug      = debug
@@ -697,7 +702,7 @@ class Debugger:
     self.max_data      = max_data
     self.max_depth     = max_depth
 
-    self.protocol   = DbgProtocol(self.port)
+    self.protocol   = DbgProtocol(self.port, self.timeout)
 
     self.ui         = DebugUI(minibufexpl)
     self.breakpt    = BreakPoint()
@@ -1070,7 +1075,11 @@ def debugger_init(debug = 0):
   if port == 0:
     port = 9000
 
-  timeout = int(vim.eval('g:dbgTimeout'))
+  waittime = int(vim.eval('dbgWaitTime'))
+  if waittime == 0:
+      waittime = 5
+
+  timeout = int(vim.eval('dbgTimeout'))
   if timeout == 0:
       timeout = 5
 
@@ -1091,7 +1100,7 @@ def debugger_init(debug = 0):
   if minibufexpl == 0:
     minibufexpl = 0
 
-  debugger  = Debugger(port, max_children, max_data, max_depth, minibufexpl, debug, timeout)
+  debugger  = Debugger(port, max_children, max_data, max_depth, minibufexpl, debug, waittime, timeout)
 
 def debugger_command(msg, arg1 = '', arg2 = ''):
   try:
