@@ -561,7 +561,7 @@ class DbgProtocol:
   def isconnected(self):
     return self.isconned
   def accept(self):
-    print 'waiting for a new connection on port '+str(self.port)+' for 5 seconds...'
+    print 'waiting for a new connection on port '+str(self.port)+' for '+str( socket.getdefaulttimeout() )+' seconds...'
     serv = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     try:
       serv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -674,9 +674,10 @@ class Debugger:
   #################################################################################################################
   # Internal functions
   #
-  def __init__(self, port = 9000, max_children = '32', max_data = '1024', max_depth = '1', minibufexpl = '0', debug = 0):
+  def __init__(self, port = 9000, max_children = '32', max_data = '1024', max_depth = '1', minibufexpl = '0', debug = 0, timeout = 5):
     """ initialize Debugger """
-    socket.setdefaulttimeout(5)
+    socket.setdefaulttimeout(timeout)
+    self.timeout    = timeout
     self.port       = port
     self.debug      = debug
 
@@ -1067,6 +1068,10 @@ def debugger_init(debug = 0):
   if port == 0:
     port = 9000
 
+  timeout = int(vim.eval('g:dbgTimeout'))
+  if timeout == 0:
+      timeout = 5
+
   # the max_depth variable to set in the engine
   max_children = vim.eval('debuggerMaxChildren')
   if max_children == '':
@@ -1084,7 +1089,7 @@ def debugger_init(debug = 0):
   if minibufexpl == 0:
     minibufexpl = 0
 
-  debugger  = Debugger(port, max_children, max_data, max_depth, minibufexpl, debug)
+  debugger  = Debugger(port, max_children, max_data, max_depth, minibufexpl, debug, timeout)
 
 def debugger_command(msg, arg1 = '', arg2 = ''):
   try:
