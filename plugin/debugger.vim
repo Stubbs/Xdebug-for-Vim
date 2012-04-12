@@ -49,6 +49,22 @@
 "               where 10001 is the new port number you want the server to
 "               connect to.
 "
+"               By default the debugger will wait 5 seconds for connections.
+"               You can increase this by putting the following line in your
+"               vimrc:
+"
+"                 let g:dbgTimeout = 10
+"
+"               The debugger usually relies on the absolute paths of files
+"               being the same on the server and client. This is fine if you
+"               are debugging locally, but debugging remotely can cause
+"               issues. To map remote paths to local paths, use the g:pathMap
+"               setting. A comma delimited list of remote:local pairs can
+"               define any number of mapped paths. Put this line in your
+"               vimrc:
+"
+"                 let g:pathMap = '/var/www/htdocs:/home/user/src/project'
+"
 "               There are three maximum limits you can set referring to the
 "               properties (variables) returned by the debugging engine.
 "
@@ -162,7 +178,10 @@ sign define breakpt text=B>  texthl=DbgBreakPt linehl=DbgBreakPt
 
 if !exists('g:debuggerPort')
   let g:debuggerPort = 9000
-endif 
+endif
+if !exists('g:dbgTimeout')
+    let g:dbgTimeout = 5
+endif
 if !exists('g:debuggerMaxChildren')
   let g:debuggerMaxChildren = 32
 endif
@@ -171,6 +190,9 @@ if !exists('g:debuggerMaxData')
 endif
 if !exists('g:debuggerMaxDepth')
   let g:debuggerMaxDepth = 1
+endif
+if !exists('g:pathMap')
+    let g:pathMap = ''
 endif
 if !exists('g:debuggerMiniBufExpl')
   let g:debuggerMiniBufExpl = 0

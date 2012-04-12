@@ -525,13 +525,12 @@ class DebugUI:
     import re
     map_sep = re.compile(',\s*')
     path_sep = re.compile('\s*:\s*')
-    if vim.eval('exists("g:pathMap")') != "0":
-        mappings = map_sep.split(vim.eval('g:pathMap'))
-        if mappings:
-          for mapping in mappings:
-             (remote_path, local_path) = path_sep.split(mapping)
-             path_map = re.compile('(' + remote_path + ')')
-             file = path_map.sub(local_path, file)
+    mappings = map_sep.split(vim.eval('pathMap'))
+    if mappings:
+      for mapping in mappings:
+         (remote_path, local_path) = path_sep.split(mapping)
+         path_map = re.compile('(' + remote_path + ')')
+         file = path_map.sub(local_path, file)
 
     if file == self.file and self.line == line:
       return
@@ -1001,13 +1000,12 @@ class Debugger:
       map_sep = re.compile(',\s*')
       path_sep = re.compile('\s*:\s*')
       remote_file = file
-      if vim.eval('exists("g:pathMap")') != "0":
-          mappings = map_sep.split(vim.eval('g:pathMap'))
-          if mappings:
-            for mapping in mappings:
-               (remote_path, local_path) = path_sep.split(mapping)
-               path_map = re.compile('(' + local_path + ')')
-               remote_file = path_map.sub(remote_path, file)
+      mappings = map_sep.split(vim.eval('pathMap'))
+      if mappings:
+        for mapping in mappings:
+           (remote_path, local_path) = path_sep.split(mapping)
+           path_map = re.compile('(' + local_path + ')')
+           remote_file = path_map.sub(remote_path, file)
       bno = self.breakpt.add(remote_file, row, exp)
       vim.command('sign place ' + str(bno) + ' name=breakpt line=' + str(row) + ' file=' + file)
       if self.protocol.isconnected():
