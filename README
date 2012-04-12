@@ -1,0 +1,62 @@
+By default, the script expects the debugging engine to connect
+on port 9000. You can change this with the g:debuggerPort
+variable by putting the following line your vimrc:
+
+  let g:debuggerPort = 10001
+
+where 10001 is the new port number you want the server to
+connect to.
+
+By default the debugger will wait 5 seconds for connections.
+You can increase this by putting the following line in your
+vimrc:
+
+  let g:dbgWaitTime = 10
+
+For blocking socket operations the timeout is normally set to
+5 seconds. If your code calls external services that cause
+longer delays, the debugger may time out. Increase the timeout
+by putting this line in your vimrc:
+
+  let g:dbgTimeout = 60
+
+The debugger usually relies on the absolute paths of files
+being the same on the server and client. This is fine if you
+are debugging locally, but debugging remotely can cause
+issues. To map remote paths to local paths, use the g:pathMap
+setting. A comma delimited list of remote:local pairs can
+define any number of mapped paths. Put this line in your
+vimrc:
+
+  let g:pathMap = '/var/www/htdocs:/home/user/src/project'
+
+There are three maximum limits you can set referring to the
+properties (variables) returned by the debugging engine.
+
+g:debuggerMaxChildren (default 32): The max number of array or
+object children to initially retrieve per variable.
+For example:
+
+  let g:debuggerMaxChildren = 64
+
+g:debuggerMaxData (default 1024 bytes): The max amount of
+variable data to retrieve.
+For example:
+
+  let g:debuggerMaxData = 2048
+
+g:debuggerMaxDepth (default 1): The maximum depth that the
+debugger engine may return when sending arrays, hashs or
+object structures to the IDE.
+For example:
+
+  let g:debuggerMaxDepth = 10
+
+Finally, if you use the Mini Buffer Explorer vim plugin,
+minibufexpl.vim, running the debugger may mess up your window
+setup. As a result the script has support to close and open
+the explorer when you enter and quit debugging sessions. To
+enable this support, add the following line to your vimrc:
+
+  let g:debuggerMiniBufExpl = 1
+
