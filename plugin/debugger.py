@@ -528,6 +528,8 @@ class DebugUI:
     mappings = map_sep.split(vim.eval('pathMap'))
     if mappings:
       for mapping in mappings:
+         if len(mapping) == 0:
+             continue
          (remote_path, local_path) = path_sep.split(mapping)
          path_map = re.compile('(' + remote_path + ')')
          file = path_map.sub(local_path, file)
@@ -1003,6 +1005,8 @@ class Debugger:
       mappings = map_sep.split(vim.eval('pathMap'))
       if mappings:
         for mapping in mappings:
+           if len(mapping) == 0:
+               continue
            (remote_path, local_path) = path_sep.split(mapping)
            path_map = re.compile('(' + local_path + ')')
            remote_file = path_map.sub(remote_path, file)
