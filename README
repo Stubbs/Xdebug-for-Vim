@@ -1,3 +1,6 @@
+For a complete tutorial on how to setup this script, please visit:
+http://tech.blog.box.net/2007/06/20/how-to-debug-php-with-vim-and-xdebug-on-linux/
+
 By default, the script expects the debugging engine to connect
 on port 9000. You can change this with the g:debuggerPort
 variable by putting the following line your vimrc:
